@@ -8,7 +8,7 @@ namespace DocsBr.Validation.IE
     /// Validação da IE de Minas Gerais
     /// </summary>
     /// <remarks>
-    /// ROTEIRO DE CRÍTICA DA INSCRIÇÃO ESTADUAL: 
+    /// ROTEIRO DE CRÍTICA DA INSCRIÇÃO ESTADUAL:
     ///   http://www.sintegra.gov.br/Cad_Estados/cad_MG.html
     /// </remarks>
     public class IEMinasGeraisValidator : IIEValidator
@@ -31,15 +31,14 @@ namespace DocsBr.Validation.IE
             string number = String.Concat(ieSemDigitos.Substring(0, 3), "0", ieSemDigitos.Substring(3, ieSemDigitos.Length - 3));
 
             string primeiroDigito = new DigitoVerificador(number)
-                                                        .Modulo(10)
                                                         .ComMultiplicadoresDeAte(1, 2)
-                                                        .SomandoAlgarismos()
-                                                        .Substituindo("0", 10)
                                                         .InvertendoMultiplicadores()
+                                                        .SomandoAlgarismos()
+                                                        .PrimeiraDezenaSuperior()
                                                         .CalculaDigito();
 
-            number = String.Concat(ieSemDigitos.Substring(0, ieSemDigitos.Length), primeiroDigito);
-            string segundoDigito = new DigitoVerificador(number)
+            string segundoDigito = new DigitoVerificador(ieSemDigitos)
+                                                        .AddDigito(primeiroDigito)
                                                         .ComMultiplicadoresDeAte(2, 11)
                                                         .Substituindo("0", 10, 11)
                                                         .CalculaDigito();

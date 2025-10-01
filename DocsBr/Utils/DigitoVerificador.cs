@@ -18,6 +18,7 @@ namespace DocsBr.Utils
         private bool somarAlgarismos = false;
         private IDictionary<int, string> substituicoes = new Dictionary<int, string>();
         private bool complementarDoModulo = true;
+        private bool primeiraDezenaSuperior = false;
 
         public DigitoVerificador(string numero)
         {
@@ -83,6 +84,16 @@ namespace DocsBr.Utils
         }
 
         /// <summary>
+        /// Existem algumas regras que é preciso calcular o digito usando a primeira dezena superior da somar/produto dos algarismos em vez do módulo
+        /// Ex: Soma = 15, Dezena = 20, Resultado = 20 - 15.
+        /// </summary>
+        public DigitoVerificador PrimeiraDezenaSuperior()
+        {
+            this.primeiraDezenaSuperior = true;
+            return this;
+        }
+
+        /// <summary>
         /// Multiplicação da esquerda para a direita.
         /// </summary>
         public DigitoVerificador InvertendoMultiplicadores()
@@ -97,9 +108,10 @@ namespace DocsBr.Utils
             return this;
         }
 
-        public void AddDigito(string digito)
+        public DigitoVerificador AddDigito(string digito)
         {
             this.numero = String.Concat(this.numero, digito);
+            return this;
         }
 
         public string CalculaDigito()
@@ -122,8 +134,18 @@ namespace DocsBr.Utils
                 if (++m >= this.multiplicadores.Count) m = 0;
             }
 
-            int mod = (soma % modulo);
-            int resultado = complementarDoModulo ? modulo - mod : mod;
+            int resultado;
+
+            if (primeiraDezenaSuperior)
+            {
+                int dezena = (int)(Math.Ceiling(soma / 10d) * 10);
+                resultado = dezena - soma;
+            }
+            else
+            {
+                int mod = (soma % modulo);
+                resultado = complementarDoModulo ? modulo - mod : mod;
+            }
 
             if (substituicoes.ContainsKey(resultado))
             {
