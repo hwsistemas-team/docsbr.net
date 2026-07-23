@@ -62,7 +62,7 @@ namespace DocsBr.Validation.IE
             string number = this.inscEstadual.Substring(0, this.inscEstadual.Length - 1);
 
             DigitoVerificador digitoVerificador = new DigitoVerificador(number)
-                                                        .Substituindo("0", 0, 1);
+                                                        .Substituindo("0", 10, 11);
             return digitoVerificador.CalculaDigito() == this.inscEstadual.Substring(this.inscEstadual.Length - 1, 1);
         }
     }
